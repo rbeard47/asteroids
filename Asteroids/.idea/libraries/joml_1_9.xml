@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="joml-1.9">
+    <CLASSES>
+      <root url="file://E:/libs/java/joml-1.9.9" />
+      <root url="file://E:/libs/java/lwjgl-release-3.1.6-custom" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://E:/libs/java/joml-1.9.9" />
+      <root url="file://E:/libs/java/lwjgl-release-3.1.6-custom" />
+    </SOURCES>
+    <jarDirectory url="file://E:/libs/java/joml-1.9.9" recursive="false" />
+    <jarDirectory url="file://E:/libs/java/lwjgl-release-3.1.6-custom" recursive="false" />
+    <jarDirectory url="file://E:/libs/java/joml-1.9.9" recursive="false" type="SOURCES" />
+    <jarDirectory url="file://E:/libs/java/lwjgl-release-3.1.6-custom" recursive="false" type="SOURCES" />
+  </library>
+</component>
