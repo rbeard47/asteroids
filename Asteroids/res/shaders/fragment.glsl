@@ -1,9 +1,10 @@
 #version 430 core
 
-in vec4 pass_color;
+in vec3 pass_color;
 
-out vec3 color;
+out vec4 gl_FragColor;
 
 void main() {
-    color = vec3(1,1,1);
+
+    gl_FragColor = vec4(pass_color, 1.0);
 }

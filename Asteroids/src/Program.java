@@ -1,8 +1,4 @@
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-
-import java.util.List;
-import java.util.Vector;
+import org.joml.Math;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -14,30 +10,28 @@ public class Program {
         DisplayManager display = new DisplayManager();
         display.createDisplay();
 
-        Model spaceship_model = ModelLoader.loadModel("spaceship");
-        Model thrust_model = ModelLoader.loadModel("thrust");
+        AsteroidGenerator generator = new AsteroidGenerator(display);
 
-        Spaceship spaceship = new Spaceship(spaceship_model, thrust_model);
+        Spaceship spaceship = new Spaceship();
+
         display.registerForKeyboardEvents(spaceship);
 
-        Asteroid asteroid = new Asteroid(new Vector3f(300, 200, 0), 0f, .5f, new Vector2f(0.5f, 0.5f));
-        Asteroid asteroid2 = new Asteroid(new Vector3f(100, 20, 0), 50f, .8f, new Vector2f( -0.1f, 0.4f));
-        Asteroid asteroid3 = new Asteroid(new Vector3f(100, 20, 0), 100f, 1f, new Vector2f( 0.2f, -0.3f));
-
         display.addGameComponent(spaceship);
+        display.addGameComponent(generator);
 
-        display.addGameComponent(asteroid);
-        display.addGameComponent(asteroid2);
-        display.addGameComponent(asteroid3);
+        generator.StartRound();
 
         StaticShader shader = new StaticShader("vertex", "fragment");
 
-        OrthographicCamera camera = new OrthographicCamera(0, display.getWidth(), display.getHeight(), 0, -1f, 1000f);
+        OrthographicCamera camera = new OrthographicCamera(0, display.getWidth(), display.getHeight(), 0,
+                -1000f, 1000f);
 
         glClearColor(0.1f, 0.1f, 0.2f, 1);
 
         double lastTime = glfwGetTime();
         double dt = 1.0 / 120.0;
+
+        CollisionDetector collisionDetector = new CollisionDetector();
 
         while (!glfwWindowShouldClose(display.getWindow())) {
             glClear(GL_COLOR_BUFFER_BIT);
@@ -57,15 +51,19 @@ public class Program {
                 frameTime -= deltaTime;
             }
 
+
             shader.start();
 
             shader.loadProjectionMatrix(camera.getViewMatrix());
 
             for (int i = 0; i < display.components().size(); i++) {
                 IGameComponent component = display.components().get(i);
+
                 if (component instanceof IDrawableGameComponent) {
-                    shader.loadModelMatrix(((IDrawableGameComponent) component).getTransform());
-                    ((IDrawableGameComponent) component).draw();
+                    shader.loadModelMatrix(((IDrawableGameComponent)component).getTransform());
+                    shader.loadVector3(shader.getUniformLocation("color"),
+                            ((IDrawableGameComponent)component).getColor());
+                    ((IDrawableGameComponent)component).draw();
                 }
             }
 

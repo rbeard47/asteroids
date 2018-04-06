@@ -1,11 +1,13 @@
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIScene;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 
 import java.util.List;
 import java.util.Vector;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class Model {
 
@@ -22,11 +24,11 @@ public class Model {
 
     public void render() {
         for (Mesh m : meshes) {
-            GL30.glBindVertexArray(m.getVertexArrayObject());
-            GL20.glEnableVertexAttribArray(m.VERTEX_INDEX);
-            GL11.glDrawArrays(GL11.GL_LINE_LOOP, 0, m.getVerticesCount());
-            GL20.glDisableVertexAttribArray(m.VERTEX_INDEX);
-            GL30.glBindVertexArray(0);
+            glBindVertexArray(m.getVao());
+            glEnableVertexAttribArray(m.VERTEX_INDEX);
+            glDrawElements(GL_LINES, m.getIndicesCount(), GL_UNSIGNED_INT, 0);
+            glDisableVertexAttribArray(m.VERTEX_INDEX);
+            glBindVertexArray(0);
         }
     }
 }

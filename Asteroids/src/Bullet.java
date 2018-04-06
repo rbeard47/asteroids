@@ -1,7 +1,12 @@
 import com.sun.istack.internal.Nullable;
+import org.joml.Intersectionf;
+import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL15;
+
+import java.util.Random;
+import java.util.Vector;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -13,42 +18,35 @@ public class Bullet implements IGameComponent, IDrawableGameComponent {
 
     public Vector3f position;
     public int vbo;
+    public int cbo;
     public int vao;
     public int ibo;
     IBulletEvent callback;
-
-    float bullet_points[] = {0.1f, 0.1f, 0,
-            0.1f, -0.1f, 0,
-            -0.1f, -0.1f, 0,
-            -0.1f, 0.1f, 0};
-
-    int indices[] = {0, 2, 1, 3};  // small X shape
-
     float velocity = 300.0f;
     float angle;
     float lifetime = 1.5f;
+    private Matrix4f localTransform;
+    private Vector3f color;
     private boolean isDead;
+    private Model bulletModel;
 
     public Bullet(Vector3f position, float angle, @Nullable IBulletEvent callback) {
+
+        bulletModel = ModelLoader.loadModel("bullet");
 
         this.callback = callback;
         this.position = position;
         this.angle = angle;
         this.velocity = velocity;
 
-        vao = glGenVertexArrays();
-        glBindVertexArray(vao);
+        localTransform = new Matrix4f();
 
-        vbo = glGenBuffers();
-        GL15.glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        GL15.glBufferData(GL_ARRAY_BUFFER, bullet_points, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+        color = new Vector3f(1, 0.1f, 0.1f);
+    }
 
-        ibo = glGenBuffers();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
-
-        glBindVertexArray(0);
+    @Override
+    public ObjectType getObjectType() {
+        return ObjectType.bullet;
     }
 
     @Override
@@ -71,29 +69,90 @@ public class Bullet implements IGameComponent, IDrawableGameComponent {
         lifetime -= msec;
 
         if (lifetime <= 0 && !isDead) {
-            isDead = true;
             manager.removeGameComponent(this);
+            destroy();
+        }
 
-            if(callback != null) {
-                callback.eventCallback();
+
+        Vector<Asteroid> destroyedAsteroids = new Vector<>();
+
+        for (int i = manager.components().size() - 1; i >= 0; i--) {
+            IGameComponent component = manager.components().get(i);
+            if (component.getObjectType() == ObjectType.asteroid) {
+                Asteroid asteroid = (Asteroid) component;
+                Vector3f asteroidPosition = asteroid.getPosition();
+
+                float radius = 0f;
+                Asteroid.AsteroidSize size = asteroid.getSize();
+
+                switch(size) {
+                    case small:
+                        radius = 8;
+                        break;
+                    case medium:
+                        radius = 25;
+                        break;
+                    case large:
+                        radius = 36;
+                        break;
+                }
+
+                if (Intersectionf.testCircleCircle(position.x, position.y, .1f, asteroidPosition.x,
+                        asteroidPosition.y, radius)) {
+                    destroy();
+                    manager.removeGameComponent(this);
+                    destroyedAsteroids.add(asteroid);
+                }
+            }
+        }
+
+        for (Asteroid asteroid : destroyedAsteroids) {
+            Asteroid.AsteroidSize size = asteroid.getSize();
+            Vector3f position = asteroid.getPosition();
+            float direction = asteroid.getDirection();
+
+            manager.removeGameComponent(asteroid);
+
+            if (size != Asteroid.AsteroidSize.small) {
+
+                if (size == Asteroid.AsteroidSize.large) {
+                    size = Asteroid.AsteroidSize.medium;
+                } else {
+                    size = Asteroid.AsteroidSize.small;
+                }
             }
         }
     }
 
     @Override
     public void draw() {
-        glBindVertexArray(vao);
-        glEnableVertexAttribArray(0);
-        glDrawElements(GL_LINES, indices.length, GL_UNSIGNED_INT, 0);
-        glDisableVertexAttribArray(0);
-        glBindVertexArray(0);
+        bulletModel.render();
     }
 
     public Matrix4f getTransform() {
-        Matrix4f temp = new Matrix4f();
-        temp.translate(position)
+        localTransform.identity();
+        localTransform.translate(position)
                 .scale(new Vector3f(10f, 10f, 1f));
-        return temp;
+
+        return localTransform;
+    }
+
+    @Override
+    public Vector3f getPosition() {
+        return this.position;
+    }
+
+    @Override
+    public Vector3f getColor() {
+        return color;
+    }
+
+    public void destroy() {
+        isDead = true;
+
+        if (callback != null) {
+            callback.eventCallback();
+        }
     }
 
     public interface IBulletEvent {

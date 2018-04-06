@@ -1,6 +1,7 @@
 import org.lwjgl.assimp.AIScene;
 
 import static org.lwjgl.assimp.Assimp.aiImportFile;
+import static org.lwjgl.assimp.Assimp.aiProcess_JoinIdenticalVertices;
 import static org.lwjgl.assimp.Assimp.aiProcess_Triangulate;
 
 public class ModelLoader {

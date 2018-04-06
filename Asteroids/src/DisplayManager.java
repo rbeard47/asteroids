@@ -1,3 +1,4 @@
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -5,7 +6,6 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -53,6 +53,14 @@ public class DisplayManager {
 
     public void registerForKeyboardEvents(IGameComponent c) {
         registeredInputComponents.add(c);
+    }
+
+    public int getScreenWidth() {
+        return width;
+    }
+
+    public int getScreenHeight() {
+        return height;
     }
 
     public void createDisplay() {
