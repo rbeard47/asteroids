@@ -4,27 +4,13 @@ import models.Asteroid;
 import org.joml.Vector3f;
 
 public class AsteroidDestroyed extends Message {
+    private Asteroid asteroid;
 
-    private Vector3f position;
-
-    public Vector3f getPosition() {
-        return position;
+    public AsteroidDestroyed(Asteroid asteroid) {
+        this.asteroid = asteroid;
     }
 
-    public Asteroid.AsteroidSize getSize() {
-        return size;
-    }
-
-    public float getDirection() {
-        return direction;
-    }
-
-    private Asteroid.AsteroidSize size;
-    private float direction;
-
-    public AsteroidDestroyed(Vector3f position, Asteroid.AsteroidSize size, float direction) {
-        this.position = position;
-        this.size = size;
-        this.direction = direction;
+    public Asteroid getAsteroid() {
+        return asteroid;
     }
 }

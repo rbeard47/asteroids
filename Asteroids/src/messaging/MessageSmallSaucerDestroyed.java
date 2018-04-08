@@ -2,11 +2,11 @@ package messaging;
 
 import org.joml.Vector3f;
 
-public class MessageAlienDestroyed extends Message {
+public class MessageSmallSaucerDestroyed extends Message {
 
     private Vector3f position;
 
-    public MessageAlienDestroyed(Vector3f position, int size){
+    public MessageSmallSaucerDestroyed(Vector3f position) {
         this.position = position;
     }
 

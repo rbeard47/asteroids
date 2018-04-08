@@ -1,34 +1,28 @@
 package program;
 
 import messaging.*;
+import models.Asteroid;
 import models.IGameComponent;
 import models.Model;
 import models.ModelLoader;
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class ScoreKeeper implements IMessageReceiver, IGameComponent {
 
     private static final int NEXT_LIFE_SCORE = 4000;
+    private static final Model digitZero = ModelLoader.loadModel("zero");
+    private static final Model digitOne = ModelLoader.loadModel("one");
+    private static final Model digitTwo = ModelLoader.loadModel("two");
+    private static final Model digitThree = ModelLoader.loadModel("three");
+    private static final Model digitFour = ModelLoader.loadModel("four");
+    private static final Model digitFive = ModelLoader.loadModel("five");
+    private static final Model digitSix = ModelLoader.loadModel("six");
+    private static final Model digitSeven = ModelLoader.loadModel("seven");
+    private static final Model digitEight = ModelLoader.loadModel("eight");
+    private static final Model digitNine = ModelLoader.loadModel("nine");
     private int score = 0;
-    private Matrix4f localTransform;
-    private Vector3f color;
-    private Vector3f[] position;
-    private Vector3f scale;
-
+    private Vector3f[] digitPositions;
     private Digit[] digits;
-
-    private Model digitZero;
-    private Model digitOne;
-    private Model digitTwo;
-    private Model digitThree;
-    private Model digitFour;
-    private Model digitFive;
-    private Model digitSix;
-    private Model digitSeven;
-    private Model digitEight;
-    private Model digitNine;
-
     private float time;
 
     private int nextLifeScore;
@@ -46,20 +40,8 @@ public class ScoreKeeper implements IMessageReceiver, IGameComponent {
         this.manager = manager;
 
         MessageManager.getInstance().RegisterForMessage(this);
-        localTransform = new Matrix4f();
-        color = new Vector3f(.6f, .6f, .6f);
-        digitZero = ModelLoader.loadModel("zero");
-        digitOne = ModelLoader.loadModel("one");
-        digitTwo = ModelLoader.loadModel("two");
-        digitThree = ModelLoader.loadModel("three");
-        digitFour = ModelLoader.loadModel("four");
-        digitFive = ModelLoader.loadModel("five");
-        digitSix = ModelLoader.loadModel("six");
-        digitSeven = ModelLoader.loadModel("seven");
-        digitEight = ModelLoader.loadModel("eight");
-        digitNine = ModelLoader.loadModel("nine");
 
-        position = new Vector3f[]{
+        digitPositions = new Vector3f[]{
                 new Vector3f(100, 30, 1),
                 new Vector3f(85, 30, 1),
                 new Vector3f(70, 30, 1),
@@ -68,11 +50,11 @@ public class ScoreKeeper implements IMessageReceiver, IGameComponent {
         };
 
         digits = new Digit[]{
-                new Digit(digitZero, position[0]),
-                new Digit(digitZero, position[1]),
-                new Digit(digitZero, position[2]),
-                new Digit(digitZero, position[3]),
-                new Digit(digitZero, position[4])
+                new Digit(digitZero, digitPositions[0]),
+                new Digit(digitZero, digitPositions[1]),
+                new Digit(digitZero, digitPositions[2]),
+                new Digit(digitZero, digitPositions[3]),
+                new Digit(digitZero, digitPositions[4])
         };
 
         manager.addGameComponent(digits[0]);
@@ -80,29 +62,27 @@ public class ScoreKeeper implements IMessageReceiver, IGameComponent {
         manager.addGameComponent(digits[2]);
         manager.addGameComponent(digits[3]);
         manager.addGameComponent(digits[4]);
-
-        scale = new Vector3f(8, 10, 1);
     }
 
     @Override
     public void Receive(Message message) {
 
         if (message instanceof AsteroidDestroyed) {
-
-            AsteroidDestroyed a = (AsteroidDestroyed) message;
-
+            Asteroid a = ((AsteroidDestroyed) message).getAsteroid();
             switch (a.getSize()) {
                 case small:
-                    score += 50;
+                    score += 100;
                     break;
                 case medium:
-                    score += 30;
+                    score += 50;
                     break;
                 case large:
-                    score += 10;
+                    score += 20;
             }
-        } else if (message instanceof MessageAlienDestroyed) {
-            score += 100;
+        } else if (message instanceof MessageSmallSaucerDestroyed) {
+            score += 1000;
+        } else if (message instanceof MessageLargeSaucerDestroyed) {
+            score += 200;
         }
     }
 
@@ -167,6 +147,7 @@ public class ScoreKeeper implements IMessageReceiver, IGameComponent {
             nextLifeScore += NEXT_LIFE_SCORE;
             playExtraLifeEffect = true;
             nextExtraLifeEffectTime = 0;
+            MessageManager.getInstance().PostMessage(new MessageNewLife());
         }
 
         if (playExtraLifeEffect) {

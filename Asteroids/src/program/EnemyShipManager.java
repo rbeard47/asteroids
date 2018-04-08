@@ -1,11 +1,9 @@
 package program;
 
-import messaging.IMessageReceiver;
-import messaging.Message;
 import models.AlienShip;
 import models.IGameComponent;
 
-public class EnemyShipManager implements IMessageReceiver, IGameComponent {
+public class EnemyShipManager implements IGameComponent {
 
     private float appearanceTimer;
     private float nextAppearance;
@@ -13,12 +11,7 @@ public class EnemyShipManager implements IMessageReceiver, IGameComponent {
 
     public EnemyShipManager(DisplayManager manager) {
         this.manager = manager;
-        nextAppearance = (float)Math.min(30, Math.max(Math.random() * 60, 60));
-    }
-
-    @Override
-    public void Receive(Message message) {
-
+        nextAppearance = (float) Math.min(30, Math.max(Math.random() * 60, 60));
     }
 
     @Override
@@ -31,8 +24,8 @@ public class EnemyShipManager implements IMessageReceiver, IGameComponent {
 
         appearanceTimer += msec;
 
-        if(appearanceTimer > nextAppearance) {
-            nextAppearance = (float)Math.max(20, Math.min(Math.random() * 60, 60));
+        if (appearanceTimer > nextAppearance) {
+            nextAppearance = (float) Math.max(20, Math.min(Math.random() * 60, 60));
             appearanceTimer = 0;
 
             manager.addGameComponent(new AlienShip());

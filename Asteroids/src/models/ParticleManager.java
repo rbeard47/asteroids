@@ -6,7 +6,6 @@ import program.DisplayManager;
 
 public class ParticleManager implements IMessageReceiver {
 
-    private static ParticleManager instance;
     private DisplayManager manager;
 
     public ParticleManager(DisplayManager manager) {
@@ -23,9 +22,9 @@ public class ParticleManager implements IMessageReceiver {
     @Override
     public void Receive(Message message) {
         if (message instanceof AsteroidDestroyed) {
-            CreateExplosion(new Vector3f(((AsteroidDestroyed) message).getPosition()));
-        } else if (message instanceof MessageAlienDestroyed) {
-            CreateExplosion(new Vector3f(((MessageAlienDestroyed) message).getPosition()));
+            CreateExplosion(new Vector3f(((AsteroidDestroyed) message).getAsteroid().getPosition()));
+        } else if (message instanceof MessageSmallSaucerDestroyed) {
+            CreateExplosion(new Vector3f(((MessageSmallSaucerDestroyed) message).getPosition()));
         }
     }
 }

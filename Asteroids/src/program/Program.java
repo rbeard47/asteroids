@@ -2,14 +2,12 @@ package program;
 
 import messaging.MessageManager;
 import messaging.MessageRoundBegin;
-import models.*;
+import models.IDrawableGameComponent;
+import models.IGameComponent;
+import models.ParticleManager;
+import models.Spaceship;
 import org.joml.Math;
 import org.joml.Vector3f;
-
-import javax.sound.sampled.*;
-
-import java.io.File;
-import java.io.IOException;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -23,7 +21,6 @@ public class Program {
 
         SoundManager.getInstance().Init();
 
-        CollisionDetector collisionDetector = new CollisionDetector();
         AsteroidManager generator = new AsteroidManager(display);
         ScoreKeeper scoreKeeper = new ScoreKeeper(display);
         ShipManager shipManager = new ShipManager(display);
@@ -39,12 +36,11 @@ public class Program {
         display.addGameComponent(scoreKeeper);
         display.addGameComponent(shipManager);
         display.addGameComponent(enemyManager);
-        //display.addGameComponent(particleManager);
 
         StaticShader shader = new StaticShader("vertex", "fragment");
 
-        OrthographicCamera camera = new OrthographicCamera(0, display.getWidth(), display.getHeight(), 0,
-                -1000f, 1000f);
+        OrthographicCamera camera = new OrthographicCamera(0, DisplayManager.getWidth(),
+                DisplayManager.getHeight(), 0, -1000f, 1000f);
 
         glClearColor(0.1f, 0.1f, 0.2f, 1);
 

@@ -28,7 +28,7 @@ public class AsteroidManager implements IGameComponent, IMessageReceiver {
         this.manager.addGameComponent(asteroid);
     }
 
-    void StartRound() {
+    private void StartRound() {
         for (int i = 0; i < 3; i++) {
             Vector3f position = new Vector3f(
                     (float) Math.random() * 30,
@@ -78,9 +78,14 @@ public class AsteroidManager implements IGameComponent, IMessageReceiver {
             StartRound();
         } else if (message instanceof AsteroidDestroyed) {
             AsteroidDestroyed a = (AsteroidDestroyed) message;
-            Asteroid.AsteroidSize size = a.getSize();
+            Asteroid asteroid = a.getAsteroid();
+            Asteroid.AsteroidSize size = asteroid.getSize();
+            Vector3f position = asteroid.getPosition();
+            float direction = asteroid.getDirection();
 
-            if (size == small) {
+            manager.removeGameComponent(asteroid);
+
+            if(size == small) {
                 return;
             }
 
@@ -90,13 +95,15 @@ public class AsteroidManager implements IGameComponent, IMessageReceiver {
                 size = small;
             }
 
-            manager.addGameComponent(new Asteroid(size, new Vector3f(a.getPosition()),
-                    (float) (Math.random() * 2 * Math.PI), (float) (Math.random() * 2f),
-                    (float) (a.getDirection() - Math.random() * Math.PI / 3), (float) Math.max(Math.random() * 160, 50)));
 
-            manager.addGameComponent(new Asteroid(size, new Vector3f(a.getPosition()),
+
+            manager.addGameComponent(new Asteroid(size, new Vector3f(position),
                     (float) (Math.random() * 2 * Math.PI), (float) (Math.random() * 2f),
-                    (float) (a.getDirection() + Math.random() * Math.PI / 3), (float) Math.max(Math.random() * 160, 50)));
+                    (float) (direction - Math.random() * Math.PI / 3), (float) Math.max(Math.random() * 160, 50)));
+
+            manager.addGameComponent(new Asteroid(size, new Vector3f(position),
+                    (float) (Math.random() * 2 * Math.PI), (float) (Math.random() * 2f),
+                    (float) (direction + Math.random() * Math.PI / 3), (float) Math.max(Math.random() * 160, 50)));
         }
     }
 }

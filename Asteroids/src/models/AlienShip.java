@@ -8,15 +8,13 @@ import program.SoundManager;
 public class AlienShip implements IGameComponent, IDrawableGameComponent {
 
     private static Model enemyShip = ModelLoader.loadModel("enemy_ship");
-    private static Vector3f scale = new Vector3f(35, -30, 1);
+    private static Vector3f scale = new Vector3f(20, -20, 1);
     private static Vector3f color = new Vector3f(1, 1, 1);
 
     private Matrix4f localTransform;
 
     private Vector3f position;
 
-    private float direction;
-    private float velocity;
     private float rotationAngle = 0;
     private float time = 0f;
     private float gunTimer = 0;
@@ -80,7 +78,7 @@ public class AlienShip implements IGameComponent, IDrawableGameComponent {
                     Vector3f enemyPosition = ship.getPosition();
 
                     float angleToEnemy = (float) (Math.atan2(enemyPosition.y - position.y,
-                            enemyPosition.x - position.x) - Math.PI / 2)  + (float)Math.random() * 0.1f - 0.05f;
+                            enemyPosition.x - position.x) - Math.PI / 2) + (float) Math.random() * 0.1f - 0.05f;
 
                     manager.addGameComponent(new EnemyBullet(new Vector3f(position), angleToEnemy, null));
                     break;

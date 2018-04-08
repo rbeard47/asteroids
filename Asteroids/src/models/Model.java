@@ -27,9 +27,9 @@ public class Model {
     public void render() {
         for (Mesh m : meshes) {
             glBindVertexArray(m.getVao());
-            glEnableVertexAttribArray(m.VERTEX_INDEX);
+            glEnableVertexAttribArray(Mesh.VERTEX_INDEX);
             glDrawElements(GL_LINES, m.getIndicesCount(), GL_UNSIGNED_INT, 0);
-            glDisableVertexAttribArray(m.VERTEX_INDEX);
+            glDisableVertexAttribArray(Mesh.VERTEX_INDEX);
             glBindVertexArray(0);
         }
     }

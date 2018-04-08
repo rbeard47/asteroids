@@ -12,6 +12,9 @@ public class ModelLoader {
         String modelFilePath = String.format("res/models/%s.obj", modelName);
 
         try (AIScene scene = aiImportFile(modelFilePath, aiProcess_Triangulate)) {
+            if (scene == null) {
+                throw new AssertionError();
+            }
             return new Model(scene);
         }
     }

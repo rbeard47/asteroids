@@ -1,17 +1,15 @@
 package program;
 
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
 
 public class OrthographicCamera {
 
-    float left;
-    float right;
-    float bottom;
-    float top;
-    float near;
-    float far;
-    private Vector2f position;
+    private float left;
+    private float right;
+    private float bottom;
+    private float top;
+    private float near;
+    private float far;
     private Matrix4f cameraTransform;
 
     public OrthographicCamera(float left, float right, float bottom, float top, float near, float far) {

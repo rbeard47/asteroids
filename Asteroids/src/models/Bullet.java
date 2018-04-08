@@ -2,7 +2,7 @@ package models;
 
 import com.sun.istack.internal.Nullable;
 import messaging.AsteroidDestroyed;
-import messaging.MessageAlienDestroyed;
+import messaging.MessageSmallSaucerDestroyed;
 import messaging.MessageManager;
 import org.joml.Intersectionf;
 import org.joml.Math;
@@ -15,20 +15,15 @@ import java.util.Vector;
 
 public class Bullet implements IGameComponent, IDrawableGameComponent {
 
+    private static Model bulletModel = ModelLoader.loadModel("BULLET");
     public Vector3f position;
     private Vector3f color;
-
     private IBulletEvent callback;
-
     private float velocity = 300f;
     private float angle;
     private float lifetime = 1.5f;
-
     private Matrix4f localTransform;
-
     private boolean isDead;
-
-    private static Model bulletModel = ModelLoader.loadModel("BULLET");
 
     public Bullet(Vector3f position, float angle, @Nullable IBulletEvent callback) {
 
@@ -71,7 +66,6 @@ public class Bullet implements IGameComponent, IDrawableGameComponent {
             manager.removeGameComponent(this);
             destroy();
         }
-
 
         Vector<Asteroid> destroyedAsteroids = new Vector<>();
 
@@ -129,19 +123,14 @@ public class Bullet implements IGameComponent, IDrawableGameComponent {
 
                         SoundManager.getInstance().PlaySound(SoundManager.SoundEffect.SMALLEXPLOSION);
                         manager.removeGameComponent(enemyShip);
-                        MessageManager.getInstance().PostMessage(new MessageAlienDestroyed(new Vector3f(position), 0));
+                        MessageManager.getInstance().PostMessage(new MessageSmallSaucerDestroyed(new Vector3f(position)));
                     }
                 }
             }
         }
 
         for (Asteroid asteroid : destroyedAsteroids) {
-            Asteroid.AsteroidSize size = asteroid.getSize();
-            Vector3f position = asteroid.getPosition();
-            float direction = asteroid.getDirection();
-            manager.removeGameComponent(asteroid);
-            MessageManager.getInstance().PostMessage(new AsteroidDestroyed(asteroid.getPosition(),
-                    asteroid.getSize(), asteroid.getDirection()));
+            MessageManager.getInstance().PostMessage(new AsteroidDestroyed(asteroid));
         }
     }
 

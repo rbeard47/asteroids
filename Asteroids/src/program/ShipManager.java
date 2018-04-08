@@ -37,6 +37,11 @@ public class ShipManager implements IMessageReceiver, IGameComponent {
     @Override
     public void update(DisplayManager manager, float msec) {
 
+        if(lifeCount < 1) {
+            MessageManager.getInstance().PostMessage(new MessageGameOver());
+            return;
+        }
+
         boolean collision = false;
 
         if (createShip) {

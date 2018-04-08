@@ -1,5 +1,6 @@
 package models;
 
+import messaging.AsteroidDestroyed;
 import messaging.MessageManager;
 import messaging.MessageSpaceshipDestroyed;
 import org.joml.Intersectionf;
@@ -8,7 +9,6 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import program.SoundManager;
 
-import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -16,20 +16,17 @@ import static org.lwjgl.glfw.GLFW.*;
 public class Spaceship implements models.IGameComponent, models.IDrawableGameComponent, models.Bullet.IBulletEvent {
 
     private final static int max_bullet_count = 6;
+    private static Model spaceshipModel = ModelLoader.loadModel("spaceship");
+    private static Model thrusterModel = ModelLoader.loadModel("thrust");
     private Vector3f position;
     private Vector3f heading;
     private Vector2f velocity;
-    private float rotationAngle = 0;
-    private float rotationVelocity = 0;
+    private float rotationAngle;
+    private float rotationVelocity;
     private Matrix4f localTransform;
-
     private AtomicInteger bulletCount;
-    private boolean isFiring = false;
+    private boolean isFiring;
     private Vector3f color;
-
-    private static Model spaceshipModel = ModelLoader.loadModel("SPACESHIP");
-    private static Model thrusterModel = ModelLoader.loadModel("thrust");
-
     private float thrustTime;
 
     public Spaceship(Vector3f position) {
@@ -43,6 +40,9 @@ public class Spaceship implements models.IGameComponent, models.IDrawableGameCom
         heading = new Vector3f(0, 1, 0);
 
         color = new Vector3f(1, 1, 1);
+        isFiring = false;
+        rotationAngle = 0;
+        rotationVelocity = 0;
     }
 
     public Matrix4f getTransform() {
@@ -72,8 +72,6 @@ public class Spaceship implements models.IGameComponent, models.IDrawableGameCom
     @Override
     public void update(program.DisplayManager manager, float msec) {
 
-        Vector<Asteroid> destroyedAsteroids = new Vector<>();
-
         for (int i = manager.components().size() - 1; i >= 0; i--) {
             IGameComponent component = manager.components().get(i);
             if (component.getObjectType() == IGameComponent.ObjectType.ASTEROID) {
@@ -99,6 +97,7 @@ public class Spaceship implements models.IGameComponent, models.IDrawableGameCom
                         asteroidPosition.y, radius)) {
                     manager.removeGameComponent(this);
                     MessageManager.getInstance().PostMessage(new MessageSpaceshipDestroyed(new Vector3f(position)));
+                    MessageManager.getInstance().PostMessage(new AsteroidDestroyed(asteroid));
                 }
             }
         }
@@ -114,7 +113,7 @@ public class Spaceship implements models.IGameComponent, models.IDrawableGameCom
             dy += Math.cos(rotationAngle) * 4f * msec;
 
             thrustTime += msec;
-            if(thrustTime > 0.25f) {
+            if (thrustTime > 0.25f) {
                 SoundManager.getInstance().PlaySound(SoundManager.SoundEffect.THRUST);
                 thrustTime = 0f;
             }
@@ -134,7 +133,7 @@ public class Spaceship implements models.IGameComponent, models.IDrawableGameCom
             if (bulletCount.get() < max_bullet_count) {
                 bulletCount.incrementAndGet();
                 manager.addGameComponent(new Bullet(new Vector3f(position.x, position.y, 1),
-                        rotationAngle, this::eventCallback));
+                        rotationAngle, this));
             }
         }
 
@@ -152,7 +151,7 @@ public class Spaceship implements models.IGameComponent, models.IDrawableGameCom
             velocity.y = 1;
         }
 
-        rotationVelocity += rx;
+        rotationVelocity = (float) (rotationVelocity + rx);
 
         position.x += velocity.x;
         position.y += velocity.y;

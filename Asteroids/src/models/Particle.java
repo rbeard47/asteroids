@@ -8,19 +8,25 @@ import program.DisplayManager;
 public class Particle implements IDrawableGameComponent, IGameComponent {
 
     private static Model particleModel = ModelLoader.loadModel("BULLET");
+
     private Matrix4f localTransform;
+
     private Vector3f position;
-    private float angle;
-    private Vector3f color = new Vector3f(1, 1, 1);
-    private Vector3f scale = new Vector3f(15, 15, 1);
+    private Vector3f color;
+    private Vector3f scale;
+
     private float velocity;
-    private float lifetime = 0.8f;
+    private float lifetime;
+    private float angle;
 
     public Particle(Vector3f position, float angle) {
         this.position = position;
         this.angle = angle;
         localTransform = new Matrix4f();
         velocity = (float) java.lang.Math.random() * 60f + 25;
+        color = new Vector3f(1, 1, 1);
+        scale = new Vector3f(15, 15, 1);
+        lifetime = 0.8f;
     }
 
     @Override

@@ -44,8 +44,6 @@ public class Mesh {
 
             IntBuffer buffer = BufferUtils.createIntBuffer(index_count);
 
-            int indices[] = new int[index_count];
-
             for (int i = 0; i < mesh.mNumFaces(); i++) {
                 AIFace face = mesh.mFaces().get(i);
 

@@ -10,13 +10,13 @@ import program.DisplayManager;
 
 public class EnemyBullet implements IDrawableGameComponent, IGameComponent {
 
+    private static Model enemyBullet = ModelLoader.loadModel("BULLET");
     private float angle;
     private float velocity = 300;
     private float lifetime = 1.6f;
     private Vector3f position;
     private Vector3f color;
     private Matrix4f localTransform;
-    private Model enemyBullet;
     private Vector3f scale = new Vector3f(15, 15, 1);
 
     public EnemyBullet(Vector3f position, float angle, Bullet.IBulletEvent callback) {
@@ -24,7 +24,6 @@ public class EnemyBullet implements IDrawableGameComponent, IGameComponent {
         this.angle = angle;
         color = new Vector3f(1f, 0.0f, 1f);
         localTransform = new Matrix4f();
-        enemyBullet = ModelLoader.loadModel("BULLET");
     }
 
     @Override

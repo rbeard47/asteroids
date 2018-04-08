@@ -26,7 +26,7 @@ public class Asteroid implements IGameComponent, IDrawableGameComponent {
     public Asteroid(AsteroidSize size, Vector3f position, float rotationAngle, float rotationVelocity,
                     float direction, float velocity) {
 
-        if(Math.random() > 0.5f) {
+        if (Math.random() > 0.5f) {
             asteroidModel = asteroidModel1;
         } else {
             asteroidModel = asteroidModel2;
