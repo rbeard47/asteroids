@@ -1,4 +1,5 @@
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
@@ -89,12 +90,20 @@ public abstract class ShaderProgram {
         GL20.glUniform1f(location, value);
     }
 
+    protected void loadInt(int location, int value) {
+        GL20.glUniform1i(location, value);
+    }
+
     protected void loadBoolean(int location, boolean value) {
         GL20.glUniform1f(location, value ? 1 : 0);
     }
 
     protected void loadVector3(int location, Vector3f value) {
         GL20.glUniform3f(location, value.x, value.y, value.z);
+    }
+
+    protected void loadVector2(int location, Vector2f value) {
+        GL20.glUniform2f(location, value.x, value.y);
     }
 
     protected void loadMatrix(int location, Matrix4f value) {
