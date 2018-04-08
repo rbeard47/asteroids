@@ -42,7 +42,13 @@ public class ShipManager implements IMessageReceiver, IGameComponent {
         if (createShip) {
             for (int i = manager.components().size() - 1; i >= 0; i--) {
                 IGameComponent component = manager.components().get(i);
-                if (component.getObjectType() == IGameComponent.ObjectType.asteroid) {
+
+                if(component.getObjectType() == ObjectType.ENEMY_SHIP) {
+                    collision = true;
+                    break;
+                }
+
+                if (component.getObjectType() == IGameComponent.ObjectType.ASTEROID) {
                     Asteroid asteroid = (Asteroid) component;
                     Vector3f asteroidPosition = asteroid.getPosition();
 
@@ -68,7 +74,7 @@ public class ShipManager implements IMessageReceiver, IGameComponent {
                 }
             }
 
-            if(collision == false) {
+            if (collision == false) {
                 manager.addGameComponent(new Spaceship(new Vector3f(manager.getScreenWidth() / 2, manager.getScreenHeight() / 2, 0)));
                 createShip = false;
             }

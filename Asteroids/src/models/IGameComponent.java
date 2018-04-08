@@ -8,10 +8,17 @@ public interface IGameComponent {
     void update(DisplayManager manager, float msec);
 
     public enum ObjectType {
-        spaceship,
-        bullet,
-        asteroid,
-        messagemanager,
-        asteroidgenerator
+        SPACESHIP,
+        BULLET,
+        ASTEROID,
+        MESSAGEMANAGER,
+        ENEMY_SHIP,
+        DIGIT,
+        SCOREKEEPER,
+        ENEMY_BULLET,
+        ENEMYSHIPMANAGER,
+        PARTICLESYSTEM,
+        PARTICLE,
+        ASTEROIDGENERATOR
     }
 }

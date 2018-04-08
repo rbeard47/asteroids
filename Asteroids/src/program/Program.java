@@ -1,10 +1,15 @@
 package program;
 
-import models.IDrawableGameComponent;
-import models.IGameComponent;
-import models.Spaceship;
+import messaging.MessageManager;
+import messaging.MessageRoundBegin;
+import models.*;
 import org.joml.Math;
 import org.joml.Vector3f;
+
+import javax.sound.sampled.*;
+
+import java.io.File;
+import java.io.IOException;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -16,10 +21,14 @@ public class Program {
         DisplayManager display = new DisplayManager();
         display.createDisplay();
 
+        SoundManager.getInstance().Init();
+
         CollisionDetector collisionDetector = new CollisionDetector();
         AsteroidManager generator = new AsteroidManager(display);
-        ScoreKeeper scoreKeeper = new ScoreKeeper();
+        ScoreKeeper scoreKeeper = new ScoreKeeper(display);
         ShipManager shipManager = new ShipManager(display);
+        EnemyShipManager enemyManager = new EnemyShipManager(display);
+        ParticleManager particleManager = new ParticleManager(display);
 
         Spaceship spaceship = new Spaceship(new Vector3f(display.getScreenWidth() / 2,
                 display.getScreenHeight() / 2, 0));
@@ -29,8 +38,8 @@ public class Program {
         display.addGameComponent(generator);
         display.addGameComponent(scoreKeeper);
         display.addGameComponent(shipManager);
-
-        generator.StartRound();
+        display.addGameComponent(enemyManager);
+        //display.addGameComponent(particleManager);
 
         StaticShader shader = new StaticShader("vertex", "fragment");
 
@@ -40,8 +49,9 @@ public class Program {
         glClearColor(0.1f, 0.1f, 0.2f, 1);
 
         double lastTime = glfwGetTime();
-        double dt = 1.0 / 120.0;
+        double dt = 1.0 / 60.0;
 
+        MessageManager.getInstance().PostMessage(new MessageRoundBegin());
 
         while (!glfwWindowShouldClose(display.getWindow())) {
             glClear(GL_COLOR_BUFFER_BIT);
@@ -60,7 +70,6 @@ public class Program {
 
                 frameTime -= deltaTime;
             }
-
 
             shader.start();
 
@@ -83,6 +92,7 @@ public class Program {
             glfwPollEvents();
         }
 
+        SoundManager.getInstance().cleanup();
         display.closeDisplay();
     }
 }

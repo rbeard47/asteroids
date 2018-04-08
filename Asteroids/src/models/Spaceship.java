@@ -1,12 +1,12 @@
 package models;
 
-import messaging.AsteroidDestroyed;
 import messaging.MessageManager;
 import messaging.MessageSpaceshipDestroyed;
 import org.joml.Intersectionf;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import program.SoundManager;
 
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,13 +27,12 @@ public class Spaceship implements models.IGameComponent, models.IDrawableGameCom
     private boolean isFiring = false;
     private Vector3f color;
 
-    private Model spaceshipModel;
-    private Model thrusterModel;
+    private static Model spaceshipModel = ModelLoader.loadModel("SPACESHIP");
+    private static Model thrusterModel = ModelLoader.loadModel("thrust");
+
+    private float thrustTime;
 
     public Spaceship(Vector3f position) {
-
-        spaceshipModel = ModelLoader.loadModel("spaceship");
-        thrusterModel = ModelLoader.loadModel("thrust");
 
         bulletCount = new AtomicInteger();
         bulletCount.set(0);
@@ -67,7 +66,7 @@ public class Spaceship implements models.IGameComponent, models.IDrawableGameCom
 
     @Override
     public ObjectType getObjectType() {
-        return ObjectType.spaceship;
+        return ObjectType.SPACESHIP;
     }
 
     @Override
@@ -77,7 +76,7 @@ public class Spaceship implements models.IGameComponent, models.IDrawableGameCom
 
         for (int i = manager.components().size() - 1; i >= 0; i--) {
             IGameComponent component = manager.components().get(i);
-            if (component.getObjectType() == IGameComponent.ObjectType.asteroid) {
+            if (component.getObjectType() == IGameComponent.ObjectType.ASTEROID) {
                 Asteroid asteroid = (Asteroid) component;
                 Vector3f asteroidPosition = asteroid.getPosition();
 
@@ -113,14 +112,20 @@ public class Spaceship implements models.IGameComponent, models.IDrawableGameCom
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
             dx += -Math.sin(rotationAngle) * 4f * msec;
             dy += Math.cos(rotationAngle) * 4f * msec;
+
+            thrustTime += msec;
+            if(thrustTime > 0.25f) {
+                SoundManager.getInstance().PlaySound(SoundManager.SoundEffect.THRUST);
+                thrustTime = 0f;
+            }
         }
 
         if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-            rx += 300 * msec;
+            rx -= 300 * msec;
         }
 
         if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-            rx -= 300 * msec;
+            rx += 300 * msec;
         }
 
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !isFiring) {
@@ -174,8 +179,8 @@ public class Spaceship implements models.IGameComponent, models.IDrawableGameCom
 
         rotationAngle += rotationAmount;
         rotationVelocity *= 0.4f;
-        velocity.x *= 0.993f;
-        velocity.y *= 0.993f;
+        velocity.x *= 0.995f;
+        velocity.y *= 0.995f;
     }
 
     @Override

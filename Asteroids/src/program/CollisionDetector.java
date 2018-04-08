@@ -24,11 +24,11 @@ public class CollisionDetector {
 
             IGameComponent component = manager.components().get(i);
 
-            if (component.getObjectType() == IGameComponent.ObjectType.asteroid) {
+            if (component.getObjectType() == IGameComponent.ObjectType.ASTEROID) {
                 asteroids.add(component);
-            } else if (component.getObjectType() == IGameComponent.ObjectType.spaceship) {
+            } else if (component.getObjectType() == IGameComponent.ObjectType.SPACESHIP) {
                 ship = component;
-            } else if (component.getObjectType() == IGameComponent.ObjectType.bullet) {
+            } else if (component.getObjectType() == IGameComponent.ObjectType.BULLET) {
                 bullets.add(component);
             }
         }
