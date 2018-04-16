@@ -23,7 +23,7 @@ public class AsteroidManager implements IGameComponent, IMessageReceiver {
         Asteroid asteroid = new Asteroid(size, position, (float) (Math.random() * 2 * Math.PI),
                 r.nextFloat() * 10,
                 (float) (Math.random() * 2 * Math.PI), (float) Math.max(Math.random() * 100, 40));
-        asteroid.setColor(new Vector3f(1.0f, r.nextFloat(), 0.5f));
+        asteroid.setColor(new Vector3f(0.5f, 0.5f, 0.5f));
 
         this.manager.addGameComponent(asteroid);
     }

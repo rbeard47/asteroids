@@ -15,7 +15,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Spaceship implements models.IGameComponent, models.IDrawableGameComponent, models.Bullet.IBulletEvent {
 
-    private final static int max_bullet_count = 6;
+    private final static int max_bullet_count = 5;
     private static Model spaceshipModel = ModelLoader.loadModel("spaceship");
     private static Model thrusterModel = ModelLoader.loadModel("thrust");
     private Vector3f position;

@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.KHRDebug;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
+import static org.lwjgl.opengl.GL20.GL_INFO_LOG_LENGTH;
 
 public abstract class ShaderProgram {
 
@@ -54,6 +56,7 @@ public abstract class ShaderProgram {
         GL20.glCompileShader(shaderID);
 
         if (GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == GL_FALSE) {
+            System.err.println(GL20.glGetProgramInfoLog(shaderID, GL20.glGetProgrami(shaderID, GL_INFO_LOG_LENGTH)));
             System.exit(-1);
         }
 

@@ -42,10 +42,10 @@ public class ScoreKeeper implements IMessageReceiver, IGameComponent {
         MessageManager.getInstance().RegisterForMessage(this);
 
         digitPositions = new Vector3f[]{
+                new Vector3f(120, 30, 1),
                 new Vector3f(100, 30, 1),
-                new Vector3f(85, 30, 1),
-                new Vector3f(70, 30, 1),
-                new Vector3f(55, 30, 1),
+                new Vector3f(80, 30, 1),
+                new Vector3f(60, 30, 1),
                 new Vector3f(40, 30, 1)
         };
 

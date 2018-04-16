@@ -40,16 +40,17 @@ public class Program {
         StaticShader shader = new StaticShader("vertex", "fragment");
 
         OrthographicCamera camera = new OrthographicCamera(0, DisplayManager.getWidth(),
-                DisplayManager.getHeight(), 0, -1000f, 1000f);
+                DisplayManager.getHeight(), 0, -10f, 10f);
 
         glClearColor(0.1f, 0.1f, 0.2f, 1);
 
         double lastTime = glfwGetTime();
-        double dt = 1.0 / 60.0;
+        double dt = 1.0 / 90.0;
 
         MessageManager.getInstance().PostMessage(new MessageRoundBegin());
 
-        while (!glfwWindowShouldClose(display.getWindow())) {
+        while (!glfwWindowShouldClose(display.getWindow()) &&
+                glfwGetKey(display.getWindow(), GLFW_KEY_ESCAPE) != GLFW_PRESS) {
             glClear(GL_COLOR_BUFFER_BIT);
 
             double now = glfwGetTime();

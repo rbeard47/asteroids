@@ -5,6 +5,8 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLUtil;
+import org.lwjgl.system.Callback;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
@@ -23,6 +25,7 @@ public class DisplayManager {
     private static List<IGameComponent> registeredInputComponents;
     private long window;
     private GLFWKeyCallback keyCallback;
+    Callback debugProc;
 
     public DisplayManager() {
         gameComponents = new Vector<>();
@@ -110,6 +113,8 @@ public class DisplayManager {
 
         } // the stack frame is popped automatically
 
+        //glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+
         glfwMakeContextCurrent(window);
 
         // Enable v-sync
@@ -119,6 +124,7 @@ public class DisplayManager {
         glfwShowWindow(window);
 
         GL.createCapabilities();
+        //debugProc = GLUtil.setupDebugMessageCallback();
     }
 
     public void updateDisplay() {

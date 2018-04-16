@@ -18,7 +18,7 @@ public class Digit implements IGameComponent, IDrawableGameComponent {
         this.digitModel = digitModel;
         this.position = position;
         color = new Vector3f(0.6f, 0.6f, 0.6f);
-        scale = new Vector3f(8, 10, 1);
+        scale = new Vector3f(11, 13, 1);
         localTransform = new Matrix4f();
     }
 
