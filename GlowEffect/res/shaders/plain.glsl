@@ -12,5 +12,5 @@ uniform mat4 modelMatrix;
 void main() {
     gl_Position = transformationMatrix * modelMatrix * vec4(position, 1.0);
     UV = (position.xy);
-    pass_color = vec3(0.5, 0.5, 0.5);
+    pass_color = vec3(0.3,0.3,0.3);
 }

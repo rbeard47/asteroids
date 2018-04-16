@@ -43,11 +43,11 @@ public class Program {
         float vertices[] = {
                 0.5f, 0, 0,
                 0, 0.5f, 0,
-                0, 0.5f, 0,
                 -0.5f, 0, 0,
                 -0.5f, 0, 0,
-                0.5f, 0, 0};
-
+                0, -0.5f, 0,
+                0.5f, 0, 0
+        };
 
         if (!glfwInit()) {
 
@@ -115,6 +115,7 @@ public class Program {
 
         StaticShader sceneShader = new StaticShader("vertex", "fragment");
         StaticShader processShader = new StaticShader("texture_vertex", "processfrag");
+        StaticShader plainShader = new StaticShader("plain", "fragment");
 
         Matrix4f cameraTransform = new Matrix4f();
         cameraTransform.setOrtho(0, 800, 600, 0, -1, 1);
@@ -149,9 +150,11 @@ public class Program {
             // Render to the framebuffer
 
             GL30.glBindFramebuffer(GL_FRAMEBUFFER, bufferFBO);
+            glViewport(0,0,800,600);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bufferColorTex, 0);
 
             glClear(GL_COLOR_BUFFER_BIT);
+            glEnable(GL_LINE_SMOOTH);
 
             sceneShader.start();  // Use scene shader
 
@@ -163,12 +166,12 @@ public class Program {
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
             glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
-            glDrawArrays(GL_LINES, 0, 6);
+            //glLineWidth(120.0f);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
 
             sceneShader.stop();
 
 // **************************************************
-
 
 
 // **************************************************
@@ -190,6 +193,7 @@ public class Program {
 
             // Set texture sampler to texture0
             processShader.loadInt(processShader.getUniformLocation("diffuseTex"), 0);
+            processShader.loadFloat(processShader.getUniformLocation("time"), (float)(glfwGetTime()*10.0f));
 
             glEnableVertexAttribArray(0);
             glBindBuffer(GL_ARRAY_BUFFER, quad_vbo);
@@ -200,6 +204,20 @@ public class Program {
             glDisableVertexAttribArray(0);
 
             processShader.stop();
+
+            plainShader.start();  // Use scene shader
+
+            plainShader.loadModelMatrix(modelTransform);
+            plainShader.loadProjectionMatrix(cameraTransform);
+            plainShader.loadVector3(colorUniform, color);
+
+            glEnableVertexAttribArray(0);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo);
+            glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+
+            glDrawArrays(GL_LINES, 0, 6);
+
+            plainShader.stop();
 
             glfwSwapBuffers(window);
             glfwPollEvents();
